@@ -133,10 +133,13 @@ class FindView extends View
       title: "Whole Word",
       keyBindingCommand: 'find-and-replace:toggle-whole-word-option',
       keyBindingTarget: @findEditor.element
-
     subs.add atom.tooltips.add @nextButton,
       title: "Find Next",
       keyBindingCommand: 'find-and-replace:find-next',
+      keyBindingTarget: @findEditor.element
+    subs.add atom.tooltips.add @nextButton,
+      title: "Find Previous",
+      keyBindingCommand: 'find-and-replace:find-previous',
       keyBindingTarget: @findEditor.element
 
   didHide: ->

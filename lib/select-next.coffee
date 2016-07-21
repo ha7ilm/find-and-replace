@@ -71,15 +71,24 @@ class SelectNext
     @scanForNextOccurrence range, ({range, stop}) =>
       @addSelection(range)
 
+
+  getFirstSelectionStart: ->
+      firstSelectionStart = @editor.getSelections()[0].getBufferRange().start
+      firstSelectionStart = selection.getBufferRange().start for selection in @editor.getSelections() when firstSelectionStart > selection.getBufferRange().start
+      console.log("firstSelectionStart", firstSelectionStart)
+      firstSelectionStart
+
   selectNextOccurrence: (options={}) ->
     startingRange = options.start ? @editor.getSelectedBufferRange().end
     range = @findNextOccurrence([startingRange, @editor.getEofBufferPosition()])
-    range ?= @findNextOccurrence([[0, 0], @editor.getSelections()[0].getBufferRange().start])
+    #range ?= @findNextOccurrence([[0, 0], @editor.getSelections()[0].getBufferRange().start])
+    range ?= @findNextOccurrence([[0, 0], @getFirstSelectionStart()])
     @addSelection(range) if range?
 
   selectPreviousOccurrence: (options={}) ->
     startingRange = options.start ? @editor.getSelectedBufferRange().end
-    range = @findPreviousOccurrence([[0, 0], @editor.getSelections()[0].getBufferRange().start])
+    #range = @findPreviousOccurrence([[0, 0], @editor.getSelections()[0].getBufferRange().start])
+    range = @findPreviousOccurrence([[0, 0], @getFirstSelectionStart()])
     range ?= @findPreviousOccurrence([startingRange, @editor.getEofBufferPosition()])
     @addSelection(range) if range?
 
@@ -92,7 +101,7 @@ class SelectNext
 
   findPreviousOccurrence: (scanRange) ->
     foundRange = null
-    @scanForNextOccurrence scanRange, ({range, stop}) ->
+    @scanForPreviousOccurrence scanRange, ({range, stop}) ->
       foundRange = range
       stop()
     foundRange
