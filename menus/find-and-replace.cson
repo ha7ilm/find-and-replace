@@ -3,6 +3,7 @@
   'submenu': [
     { 'label': 'Find in Buffer', 'command': 'find-and-replace:show'}
     { 'label': 'Replace in Buffer', 'command': 'find-and-replace:show-replace'}
+    { 'label': 'Select Previous', 'command': 'find-and-replace:select-previous'}
     { 'label': 'Select Next', 'command': 'find-and-replace:select-next'}
     { 'label': 'Select All', 'command': 'find-and-replace:select-all'}
     { 'label': 'Toggle Find in Buffer', 'command': 'find-and-replace:toggle'}

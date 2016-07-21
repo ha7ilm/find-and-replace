@@ -106,6 +106,8 @@ module.exports =
     atom.commands.add '.editor:not(.mini)',
       'find-and-replace:select-next': (event) ->
         selectNextObjectForEditorElement(this).findAndSelectNext()
+      'find-and-replace:select-previous': (event) ->
+        selectNextObjectForEditorElement(this).findAndSelectPrevious()
       'find-and-replace:select-all': (event) ->
         selectNextObjectForEditorElement(this).findAndSelectAll()
       'find-and-replace:select-undo': (event) ->

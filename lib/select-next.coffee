@@ -17,6 +17,12 @@ class SelectNext
     else
       @selectNextOccurrence()
 
+  findAndSelectPrevious: ->
+    if @editor.getLastSelection().isEmpty()
+      @selectWord()
+    else
+      @selectPreviousOccurrence()
+
   findAndSelectAll: ->
     @selectWord() if @editor.getLastSelection().isEmpty()
     @selectAllOccurrences()
@@ -71,7 +77,20 @@ class SelectNext
     range ?= @findNextOccurrence([[0, 0], @editor.getSelections()[0].getBufferRange().start])
     @addSelection(range) if range?
 
+  selectPreviousOccurrence: (options={}) ->
+    startingRange = options.start ? @editor.getSelectedBufferRange().end
+    range = @findPreviousOccurrence([[0, 0], @editor.getSelections()[0].getBufferRange().start])
+    range ?= @findPreviousOccurrence([startingRange, @editor.getEofBufferPosition()])
+    @addSelection(range) if range?
+
   findNextOccurrence: (scanRange) ->
+    foundRange = null
+    @scanForNextOccurrence scanRange, ({range, stop}) ->
+      foundRange = range
+      stop()
+    foundRange
+
+  findPreviousOccurrence: (scanRange) ->
     foundRange = null
     @scanForNextOccurrence scanRange, ({range, stop}) ->
       foundRange = range
@@ -94,6 +113,20 @@ class SelectNext
       if prefix = result.match[1]
         result.range = result.range.translate([0, prefix.length], [0, 0])
       callback(result)
+
+  scanForPreviousOccurrence: (range, callback) ->
+    selection = @editor.getLastSelection()
+    text = _.escapeRegExp(selection.getText())
+
+    if @wordSelected
+      nonWordCharacters = atom.config.get('editor.nonWordCharacters')
+      text = "(^|[ \t#{_.escapeRegExp(nonWordCharacters)}]+)#{text}(?=$|[\\s#{_.escapeRegExp(nonWordCharacters)}]+)"
+
+    @editor.backwardsScanInBufferRange new RegExp(text, 'g'), range, (result) ->
+      if prefix = result.match[1]
+        result.range = result.range.translate([0, prefix.length], [0, 0])
+      callback(result)
+
 
   updateSavedSelections: (selection=null) ->
     selections = @editor.getSelections()
